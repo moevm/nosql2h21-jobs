@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  neo4j:
+    image: neo4j
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/admin
+    volumes:
+      - ./neo4j/data:/data:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"
+        max-file: "2"
+    restart: unless-stopped
+  hello_world:
+    build:
+      context: ./
+      dockerfile: ./src/hello_world/Dockerfile
+    container_name: hello_world
+    environment:
+      - CONFIG_NAME=settings.conf
+    depends_on:
+      - neo4j
+    restart: "no"
