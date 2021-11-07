@@ -12,6 +12,10 @@ services:
       options:
         max-size: "250m"
         max-file: "2"
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
     restart: unless-stopped
   hello_world:
     build:
