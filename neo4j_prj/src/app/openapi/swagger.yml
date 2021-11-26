@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  description: "Jobs_app"
+  version: 1.0.0
+  title: "OpenAPI Rest Article"
+paths:
+  /test:
+    get:
+      operationId: app.test.test
+      tags:
+        - test_tag
+      summary: Test summary
+      description: Test description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+  /area/{id}:
+    get:
+      operationId: app.area.get
+      tags:
+        - area
+      summary: Area summary
+      description: Area description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: id
+          in: path
+          description: area id
+          required: true
+          schema:
+            type: string
+
+  /vacancy/list/{offset}/{limit}:
+    get:
+      operationId: app.vacancy.get_list
+      tags:
+        - vacancy
+      summary: Vacancy summary
+      description: Vacancy description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          schema:
+            type: integer
+
+#            def get(offset:int = 0,limit:int = 100):
+
+servers:
+  - url: /api
