@@ -1,2 +1,9 @@
 neo4j
 requests
+dataclasses
+
+flask
+flask_swagger_ui
+flask_cors
+swagger_ui_bundle
+connexion
