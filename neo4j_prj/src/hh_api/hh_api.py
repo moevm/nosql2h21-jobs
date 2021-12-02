@@ -14,7 +14,6 @@ class Area(object):
     areas: List[int]
 
 
-
 class Hh_api(object):
     def __init__(self, api_domain: str = "api.hh.ru"):
         self.api = api_domain
@@ -33,7 +32,6 @@ class Hh_api(object):
                     areas=[])
         area.areas.extend(map(lambda x: int(x["id"]), data["areas"]))
         return area
-
 
     def get_currencies(self):
         address = f"https://api.hh.ru/dictionaries"
@@ -73,3 +71,23 @@ class Hh_api(object):
                 res.append({"id": val["type"]["id"], "name": val["type"]["name"]})
         return res
 
+    def get_vacancy(self):
+        address = f"https://api.hh.ru/vacancies"
+        data = json.loads(requests.get(address).content.decode())
+        data = data["items"]
+        res = []
+        for val in data:
+            res.append({"id": int(val["id"]),
+                        "name": val["name"],
+                        "has_test": val["has_test"],
+                        "salary_from": int(val["salary"]["from"]) if val["salary"] and val["salary"][
+                            "from"] is not None else None,
+                        "salary_to": int(val["salary"]["to"]) if val["salary"] and val["salary"][
+                            "to"] is not None else None,
+                        "published_at": val["published_at"],
+                        "created_at": val["created_at"],
+                        "requirement": val["snippet"]["requirement"],
+                        "responsibility": val["snippet"]["responsibility"]
+                        })
+
+        return res
