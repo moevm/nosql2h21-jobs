@@ -63,10 +63,13 @@ class Hh_api(object):
                 res.append({"id": val["schedule"]["id"], "name": val["schedule"]["name"]})
         return res
 
-    '''def get_vacancy_type(self):
+    def get_vacancy_type(self):
         address = f"https://api.hh.ru/vacancies"
         data = json.loads(requests.get(address).content.decode())
         data = data["items"]
         res = []
-'''
+        for val in data:
+            if ({"id": val["type"]["id"], "name": val["type"]["name"]}) not in res:
+                res.append({"id": val["type"]["id"], "name": val["type"]["name"]})
+        return res
 
