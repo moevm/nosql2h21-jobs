@@ -50,6 +50,7 @@ class Hh_api(object):
         data = json.loads(requests.get(address).content.decode())
         data = data["currency"]
         res = []
+
         for val in data:
             res.append({"name": val["code"]})
 
