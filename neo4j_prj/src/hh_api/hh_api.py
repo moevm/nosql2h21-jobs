@@ -45,6 +45,8 @@ class Hh_api(object):
 
         return req
 
+#test commit for push
+
     def get_currencies(self):
         address = f"https://api.hh.ru/dictionaries"
         data = json.loads(requests.get(address).content.decode())
