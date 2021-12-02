@@ -14,9 +14,6 @@ class Area(object):
     areas: List[int]
 
 
-#class Currency(object):
-#    name: str
-
 
 class Hh_api(object):
     def __init__(self, api_domain: str = "api.hh.ru"):
@@ -37,23 +34,39 @@ class Hh_api(object):
         area.areas.extend(map(lambda x: int(x["id"]), data["areas"]))
         return area
 
-    # def get_vacancy(self):
-
-    def test(self, id):
-        address = f"https://api.hh.ru/vacancies/{id}"
-        req = json.loads(requests.get(address).content.decode())
-
-        return req
-
-#test commit for push
 
     def get_currencies(self):
         address = f"https://api.hh.ru/dictionaries"
         data = json.loads(requests.get(address).content.decode())
         data = data["currency"]
         res = []
-
         for val in data:
             res.append({"name": val["code"]})
-
         return res
+
+    def get_employer(self):
+        address = f"https://api.hh.ru/vacancies"
+        data = json.loads(requests.get(address).content.decode())
+        data = data["items"]
+        res = []
+        for val in data:
+            res.append({"id": int(val["employer"]["id"]), "name": val["employer"]["name"]})
+        return res
+
+    def get_schedule(self):
+        address = f"https://api.hh.ru/vacancies"
+        data = json.loads(requests.get(address).content.decode())
+        data = data["items"]
+        res = []
+        for val in data:
+            if ({"id": val["schedule"]["id"], "name": val["schedule"]["name"]}) not in res:
+                res.append({"id": val["schedule"]["id"], "name": val["schedule"]["name"]})
+        return res
+
+    '''def get_vacancy_type(self):
+        address = f"https://api.hh.ru/vacancies"
+        data = json.loads(requests.get(address).content.decode())
+        data = data["items"]
+        res = []
+'''
+

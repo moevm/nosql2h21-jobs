@@ -8,9 +8,9 @@ api = hh_api.Hh_api()
 
 #res = api.test(49186602)
 
-res = api.test_valuta()
+res = api.get_schedule()
 print(json.dumps(res, indent = 1, ensure_ascii=False))
-#print("AAAAAAaaa")
+
 #print(res)
 if __name__ == "__main__":
     pass
