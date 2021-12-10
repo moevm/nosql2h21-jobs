@@ -4,6 +4,8 @@ from typing import Optional, List
 import requests
 from dataclasses import dataclass
 
+from . import preprocess as prep
+
 
 # from attr import dataclass
 @dataclass
@@ -71,23 +73,33 @@ class Hh_api(object):
                 res.append({"id": val["type"]["id"], "name": val["type"]["name"]})
         return res
 
+    def get_vacancy_by_id_raw(self, id):
+        address = f"https://api.hh.ru/vacancies/{id}"
+        data = json.loads(requests.get(address).content.decode())
+        return data
+
+    def get_vacancy_by_name(self, name, area=None, num_of_pages=1, num_per_page=100):
+        params = {
+                'text': 'NAME:Аналитик',  # Текст фильтра. В имени должно быть слово "Аналитик"
+                'area': 1,  # Поиск ощуществляется по вакансиям города Москва
+                'page': 2,  # Индекс страницы поиска на HH
+                'per_page': 100,  # Кол-во вакансий на 1 странице
+                'describe_arguments': True
+        }
+
+        # VACANCIES
+        req = requests.get('https://api.hh.ru/vacancies', params)
+        response = req.content.decode()
+        req.close()
+
+        response = json.loads(response)
+        return response.get("items")
+
     def get_vacancy(self):
         address = f"https://api.hh.ru/vacancies"
         data = json.loads(requests.get(address).content.decode())
         data = data["items"]
         res = []
         for val in data:
-            res.append({"id": int(val["id"]),
-                        "name": val["name"],
-                        "has_test": val["has_test"],
-                        "salary_from": int(val["salary"]["from"]) if val["salary"] and val["salary"][
-                            "from"] is not None else None,
-                        "salary_to": int(val["salary"]["to"]) if val["salary"] and val["salary"][
-                            "to"] is not None else None,
-                        "published_at": val["published_at"],
-                        "created_at": val["created_at"],
-                        "requirement": val["snippet"]["requirement"],
-                        "responsibility": val["snippet"]["responsibility"]
-                        })
-
+            res.append(prep.preproc_vacancy_peel(val))
         return res

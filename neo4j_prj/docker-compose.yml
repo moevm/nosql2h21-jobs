@@ -5,8 +5,14 @@ services:
     container_name: neo4j
     environment:
       - NEO4J_AUTH=neo4j/admin
+      - NEO4J_HOME=/neo4j
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_dbms_security_allow__csv__import__from__file__urls=true
     volumes:
       - ./neo4j/data:/data:rw
+      - ./neo4j:/neo4j:rw
+      - ./neo4j/import:/var/lib/neo4j/import:rw
     logging:
       driver: "json-file"
       options:
@@ -17,6 +23,7 @@ services:
       - "7473:7473"
       - "7687:7687"
     restart: unless-stopped
+
   hello_world:
     build:
       context: ./
@@ -27,3 +34,18 @@ services:
     depends_on:
       - neo4j
     restart: "no"
+
+  rest:
+    build:
+      context: ./
+      dockerfile: ./src/Dockerfile
+    container_name: neo_rest
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+
+networks:
+  default:
+    external:
+      name: tx_net
+

@@ -42,3 +42,4 @@ if __name__ == "__main__":
         #                      "RETURN a.message + ', from node ' + id(a)")
         # print(result.single()[0])
     driver.close()
+    # while(True):pass

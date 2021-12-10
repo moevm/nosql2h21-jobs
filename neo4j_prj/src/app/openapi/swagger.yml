@@ -52,7 +52,7 @@ paths:
 
   /vacancy/list/{offset}/{limit}:
     get:
-      operationId: app.vacancy.get_list
+      operationId: app.vacancy.get
       tags:
         - vacancy
       summary: Vacancy summary
@@ -74,12 +74,14 @@ paths:
           in: path
           description: offset
           required: true
+          example: 0
           schema:
             type: integer
         - name: limit
           in: path
           description: limit
           required: true
+          example: 100
           schema:
             type: integer
 

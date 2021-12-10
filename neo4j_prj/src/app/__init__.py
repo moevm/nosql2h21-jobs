@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import flask.app
 from flask import send_file, Flask, jsonify
 # from swagger_ui_bundle import swagger_ui_path
 import connexion
@@ -42,7 +43,8 @@ def create_app(config_filename: str = None):
     #                 'app_name': config.APP_NAME
     #         },
     # )
-    app = connex_app.app
+    app:flask.app.Flask = connex_app.app
+
     # app = Flask(__name__, instance_relative_config=True)
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config.from_object(config)
@@ -71,6 +73,7 @@ def create_app(config_filename: str = None):
             return str(e)
 
     with app.app_context():
+        app
         # from webapp.models import db
         # db.app = app
         # db.init_app(app)
