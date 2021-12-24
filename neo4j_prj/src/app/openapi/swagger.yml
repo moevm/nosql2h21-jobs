@@ -269,6 +269,41 @@ paths:
             type: string
 
   #---------------------------------------------------------------------------------------------------------------------
+  /schedule/:
+    get:
+      operationId: app.schedule.get
+      tags:
+        - aux
+        - schedule
+      summary: All schedules
+      description: All schedules
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+
+  /vacancy_type/:
+    get:
+      operationId: app.vacancy_type.get
+      tags:
+        - aux
+        - vacancy_type
+      summary: All vacancy types
+      description: All vacancy types
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+
+
+
+  #---------------------------------------------------------------------------------------------------------------------
 
 
 
