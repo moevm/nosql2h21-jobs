@@ -8,8 +8,6 @@ from typing import List, Dict
 
 from neo4j import GraphDatabase
 
-from hh_api.hh_api import Area
-
 
 @contextlib.contextmanager
 def nostdout():
@@ -47,17 +45,40 @@ class Neo_api(object):
                 s += f'{k}:{json.dumps(v, ensure_ascii=False)},'
         return s.strip(',')
 
-    def get_area_list(self, offset = 0, limit = 100):
-        pass
+    ## % AREA
+    def get_area_list(self, offset=0, limit=100) -> List[Dict]:
+        q = f'match (n:Area) return n SKIP {offset} LIMIT {limit}'
+        res = self.exec(q)
+        res = [dict(i[0]) for i in res]
+        return res
 
-    def create_area(self, area: Area):
-        transaction = lambda tx: tx.run("CREATE (a:Area) "
-                                        f"SET a.id = '{area.id}' "
-                                        f"SET a.name = '{area.name}' "
-                                        "RETURN a.message + ', from node ' + id(a)").values()
-        # area.
-        with self.driver.session() as session:
-            print(session.write_transaction(transaction)[0])
+    def get_area_count(self) -> int:
+        q = f'match (n:Area) return COUNT(n)'
+        res = self.exec(q)
+        return res[0][0]
+
+    def create_area(self, name: str):
+        new_id = max(self.get_max_area(), 10000) + 1
+
+        q = "CREATE (a:Area) " \
+            f"SET a.id = {new_id} " \
+            f"SET a.name = '{name}' " \
+            "RETURN a"
+
+        res = self.exec(q)
+        return dict(res)
+
+    def get_area(self, id: int):
+        q = f'match (n:Area{{id:{id}}}) return n'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
+
+    def get_max_area(self):
+        q = 'match (n:Area) return max(n.id)'
+        res = self.exec(q)
+        return res[0][0]
+
+    ## % AREA
 
     def get_vacancy(self, offset=0, limit=100) -> List[Dict]:
         q_id = f"MATCH (n:Vacancy) return n.id SKIP {offset} LIMIT {limit}"
@@ -75,6 +96,64 @@ class Neo_api(object):
             vacs[triplet[0].get("id")][list(opt.labels)[0]] = dict(opt)
 
         return list(vacs.values())
+
+    ## % Currency
+
+    def get_currencies(self):
+        q = 'match (n:Currency) return n'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
+
+    def create_currency(self, name: str):
+        if name:
+            q = f"merge (n:Currency{{name:'{name}'}}) return n"
+            res = self.exec(q)
+            return [dict(i[0]) for i in res]
+        return None
+
+    ## % Employer
+
+    def get_max_employer(self):
+        q = 'match (n:Employer) return max(n.id)'
+        res = self.exec(q)
+        return res[0][0]
+
+    def get_employer(self, id):
+        q = f'match (n:Employer{{id:{id}}}) return n'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
+
+    def get_employer_list(self, offset=0, limit=100):
+        q = f'match (n:Employer) return n SKIP {offset} LIMIT {limit}'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
+
+    def get_employer_count(self) -> int:
+        q = f'match (n:Employer) return COUNT(n)'
+        res = self.exec(q)
+        return res[0][0]
+
+    def create_employer(self, name: str):
+        new_id = self.get_max_employer() + 1
+
+        q = "CREATE (a:Employer) " \
+            f"SET a.id = '{new_id}' " \
+            f"SET a.name = '{name}' " \
+            "RETURN a"
+
+        res = self.exec(q)
+        return res
+
+    ## % Schedule
+    def get_schedule(self):
+        q = 'match (n:Schedule) return n'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
+
+    def get_vacancy_type(self):
+        q = 'match (n:Vacancy_type) return n'
+        res = self.exec(q)
+        return [dict(i[0]) for i in res]
 
     def create_vacancy_all(self, vacancy_all: Dict):
         vac_all = vacancy_all

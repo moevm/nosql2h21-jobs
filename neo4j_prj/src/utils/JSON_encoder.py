@@ -1,9 +1,16 @@
-import json
 import datetime
 from uuid import UUID
 
 import dataclasses
+import neo4j
 from dataclasses import is_dataclass
+import datetime
+from uuid import UUID
+
+import dataclasses
+import neo4j
+from dataclasses import is_dataclass
+
 
 # dataclasses.is_dataclass(something)
 
@@ -19,3 +26,5 @@ def json_encoder(obj):
         return str(obj)
     if isinstance(obj, datetime.date) or isinstance(obj, datetime.datetime):
         return obj.isoformat()
+    if isinstance(obj, neo4j.graph.Node):
+        return dict(obj)

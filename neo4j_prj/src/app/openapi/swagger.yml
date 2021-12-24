@@ -23,6 +23,7 @@ paths:
                   description: "foo"
         "204":
           description: OK. Empty responce
+  #---------------------------------------------------------------------------------------------------------------------
   /area/{id}:
     get:
       operationId: app.area.get
@@ -49,6 +50,191 @@ paths:
           required: true
           schema:
             type: string
+  /area/:
+    post:
+      operationId: app.area.post
+      tags:
+        - area
+      summary: Create area
+      description: Create area
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Area"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: name
+          in: query
+          description: new area name
+          required: true
+          schema:
+            type: string
+
+  /area/list:
+    get:
+      operationId: app.area.get_list
+      tags:
+        - area
+      summary: Range of area objects
+      description: Range of area objects
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Area"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: offset
+          in: query
+          description: offset to first entry
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: number of entries
+          required: false
+          schema:
+            type: integer
+            default: 100
+  /area/count:
+    get:
+      operationId: app.area.get_count
+      tags:
+        - area
+      summary: Range of area objects
+      description: Count areas
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  #---------------------------------------------------------------------------------------------------------------------
+  /employer/{id}:
+    get:
+      operationId: app.employer.get
+      tags:
+        - employer
+      summary: Area summary
+      description: Area description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: id
+          in: path
+          description: employer id
+          required: true
+          schema:
+            type: string
+  /employer/:
+    post:
+      operationId: app.employer.post
+      tags:
+        - employer
+      summary: Create employer
+      description: Create employer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Area"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: name
+          in: query
+          description: new employer name
+          required: true
+          schema:
+            type: string
+
+  /employer/list:
+    get:
+      operationId: app.employer.get_list
+      tags:
+        - employer
+      summary: Range of employer objects
+      description: Range of employer objects
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Area"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: offset
+          in: query
+          description: offset to first entry
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: number of entries
+          required: false
+          schema:
+            type: integer
+            default: 100
+  /employer/count:
+    get:
+      operationId: app.employer.get_count
+      tags:
+        - employer
+      summary: Range of employer objects
+      description: Count employers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+  #---------------------------------------------------------------------------------------------------------------------
+
+  #---------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
   /vacancy/list/{offset}/{limit}:
     get:
