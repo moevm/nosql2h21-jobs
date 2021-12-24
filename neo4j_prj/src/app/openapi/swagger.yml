@@ -229,6 +229,44 @@ paths:
               schema:
                 type: integer
   #---------------------------------------------------------------------------------------------------------------------
+  /currency/:
+    get:
+      operationId: app.currency.get
+      tags:
+        - currency
+      summary: All currencies
+      description: All currencies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+    post:
+      operationId: app.currency.post
+      tags:
+        - currency
+      summary: Create currency
+      description: Create currency
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+        "201":
+          description: OK, creater
+        "208":
+          description: OK, already exists
+      parameters:
+        - name: name
+          in: query
+          description: new currency name
+          required: true
+          schema:
+            type: string
 
   #---------------------------------------------------------------------------------------------------------------------
 

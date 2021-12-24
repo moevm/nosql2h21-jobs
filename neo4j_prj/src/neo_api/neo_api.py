@@ -34,7 +34,6 @@ class Neo_api(object):
             except:
                 sleep(1)
         if not self.driver:
-            e = Exception
             raise Exception(f"Neo4j connection timed out after {timeout_sec} sec")
 
     @staticmethod
