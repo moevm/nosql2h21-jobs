@@ -23,6 +23,33 @@ paths:
                   description: "foo"
         "204":
           description: OK. Empty responce
+
+  /test_api/{id}:
+    get:
+      operationId: app.aux.neo_api.get_kss_for_vac
+      tags:
+        - test_tag
+      summary: Test summary
+      description: Test description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: id
+          in: path
+          description: vac id
+          required: true
+          schema:
+            type: integer
   #---------------------------------------------------------------------------------------------------------------------
   /area/{id}:
     get:
@@ -267,6 +294,38 @@ paths:
           required: true
           schema:
             type: string
+
+  #---------------------------------------------------------------------------------------------------------------------
+  /vacancy/top_need/{offset}/{limit}:
+    get:
+      operationId: app.aux.neo_api.get_top_need
+      tags:
+        - aux
+        - schedule
+      summary: All schedules
+      description: All schedules
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          example: 0
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          example: 100
+          schema:
+            type: integer
 
   #---------------------------------------------------------------------------------------------------------------------
   /schedule/:

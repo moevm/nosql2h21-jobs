@@ -78,22 +78,39 @@ class Hh_api(object):
         data = json.loads(requests.get(address).content.decode())
         return data
 
-    def get_vacancy_by_name(self, name, area=None, num_of_pages=1, num_per_page=100):
+    def get_vacancy_by_name(self, name='Аналитик', area=None, num_of_pages=1, num_per_page=100):
         params = {
-                'text': 'NAME:Аналитик',  # Текст фильтра. В имени должно быть слово "Аналитик"
-                'area': 1,  # Поиск ощуществляется по вакансиям города Москва
-                'page': 2,  # Индекс страницы поиска на HH
-                'per_page': 100,  # Кол-во вакансий на 1 странице
+                'text': f'NAME:{name}',  # Текст фильтра. В имени должно быть слово "Аналитик"
+                # 'area': 1,  # Поиск ощуществляется по вакансиям города Москва
+                'page': num_of_pages,  # Индекс страницы поиска на HH
+                'per_page': num_per_page,  # Кол-во вакансий на 1 странице
                 'describe_arguments': True
         }
-
+        if area:
+            params['area'] = area
         # VACANCIES
         req = requests.get('https://api.hh.ru/vacancies', params)
         response = req.content.decode()
         req.close()
 
         response = json.loads(response)
-        return response.get("items")
+
+        ret = response.get("items")
+
+        ids = [i["id"] for i in response.get("items")]
+
+        ress = []
+        for item in ret:
+            iid = item["id"]
+            req = requests.get(f'https://api.hh.ru/vacancies/{iid}', {'describe_arguments': True})
+            response = req.content.decode()
+            req.close()
+            response = json.loads(response)
+            ks = response.get("key_skills")
+            item["key_skills"] = response["key_skills"]
+            # ress.append(response)
+
+        return ret  # ress # response.get("items")
 
     def get_vacancy(self):
         address = f"https://api.hh.ru/vacancies"

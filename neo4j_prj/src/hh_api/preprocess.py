@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 
 def preproc_vacancy_peel(vacancy: Dict):
@@ -21,7 +21,18 @@ def preproc_vacancy_peel(vacancy: Dict):
 
 def preproc_vacancy_get_employer(vacancy: Dict):
     val = vacancy
-    res = {"id": int(val["employer"]["id"]), "name": val["employer"]["name"]}
+    try:
+        res = {"id": int(val["employer"].get("id") or 1), "name": val["employer"]["name"]}
+    except Exception as e:
+        print(val.get("employer"))
+        print(vacancy)
+        raise e
+    return res
+
+
+def preproc_vacancy_get_key_skills(vacancy: Dict):
+    val = vacancy
+    res: List[str] = val.get("key_skills") or []
     return res
 
 
@@ -49,7 +60,7 @@ def preproc_vacancy_get_currency(vacancy: Dict):
     val = vacancy
     salary = val["salary"]
     if not salary:
-        res = {"name":"NONE"}
+        res = {"name": "NONE"}
     else:
         res = {"name": salary["currency"]}
     return res
@@ -61,5 +72,6 @@ def preproc_vacancy(vacancy: Dict):
            "employer": preproc_vacancy_get_employer(vacancy),
            "schedule": preproc_vacancy_get_schedule(vacancy),
            "type": preproc_vacancy_get_type(vacancy),
-           "vacancy": preproc_vacancy_peel(vacancy)}
+           "vacancy": preproc_vacancy_peel(vacancy),
+           "key_skills": preproc_vacancy_get_key_skills(vacancy)}
     return res
