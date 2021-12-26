@@ -1,3 +1,4 @@
+import base64
 import contextlib
 import io
 import json
@@ -315,6 +316,41 @@ class Neo_api(object):
         fto = random.randint(11, 20) * 10000
         ret = {"items": vacs, "from": fro, "to": fto}
         return ret
+
+    def get_top_paid(self, offset: int = 0, limit: int = 10):
+        q = f'MATCH (n:Vacancy) ' \
+            f'WITH n order by n.m desc ' \
+            f'return n ' \
+            f'SKIP {offset} ' \
+            f'LIMIT {limit} '
+        res = self.exec(q)
+        vacs = [dict(i[0]) for i in res]
+        fro = random.randint(5, 10) * 10000
+        fto = random.randint(11, 20) * 10000
+        ret = {"items": vacs, "from": fro, "to": fto}
+        return ret
+
+    def get_top_new(self, offset: int = 0, limit: int = 10):
+        q = f'MATCH (n:Vacancy) ' \
+            f'WITH n order by n.published_at desc ' \
+            f'return n ' \
+            f'SKIP {offset} ' \
+            f'LIMIT {limit} '
+        res = self.exec(q)
+        vacs = [dict(i[0]) for i in res]
+        fro = random.randint(5, 10) * 10000
+        fto = random.randint(11, 20) * 10000
+        ret = {"items": vacs, "from": fro, "to": fto}
+        return ret
+
+    def export(self):
+        q = 'MATCH (n:Vacancy) RETURN n.id'
+        res = self.exec(q)
+        ids = [i[0] for i in res]
+        dd = json.dumps(ids)
+        b = base64.b64encode(text.encode())
+
+        return ids
 
     def exec(self, query: str):
         transaction = lambda tx: tx.run(query).values()

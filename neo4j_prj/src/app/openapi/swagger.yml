@@ -296,36 +296,7 @@ paths:
             type: string
 
   #---------------------------------------------------------------------------------------------------------------------
-  /vacancy/top_need/{offset}/{limit}:
-    get:
-      operationId: app.aux.neo_api.get_top_need
-      tags:
-        - aux
-        - schedule
-      summary: All schedules
-      description: All schedules
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-      parameters:
-        - name: offset
-          in: path
-          description: offset
-          required: true
-          example: 0
-          schema:
-            type: integer
-        - name: limit
-          in: path
-          description: limit
-          required: true
-          example: 100
-          schema:
-            type: integer
+
 
   #---------------------------------------------------------------------------------------------------------------------
   /schedule/:
@@ -365,7 +336,95 @@ paths:
   #---------------------------------------------------------------------------------------------------------------------
 
 
+  /vacancy/top_need/{offset}/{limit}:
+    get:
+      operationId: app.aux.neo_api.get_top_need
+      tags:
+        - vacancy
+      summary: Get top needed vacancies
+      description: Get top needed vacancies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          example: 0
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          example: 4
+          schema:
+            type: integer
 
+  /vacancy/top_paid/{offset}/{limit}:
+    get:
+      operationId: app.aux.neo_api.get_top_paid
+      tags:
+        - vacancy
+      summary: Get top paid vacancies
+      description: Get top paid vacancies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          example: 0
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          example: 4
+          schema:
+            type: integer
+
+  /vacancy/top_new/{offset}/{limit}:
+    get:
+      operationId: app.aux.neo_api.get_top_new
+      tags:
+        - vacancy
+      summary: Get newest vacancies
+      description: Get newest vacancies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          example: 0
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          example: 4
+          schema:
+            type: integer
 
 
   /vacancy/list/{offset}/{limit}:
