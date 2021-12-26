@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Link } from '@reach/router';
 
@@ -11,6 +12,12 @@ export const MainContainer = styled.div`
   width: 100%;
 
   padding: 10vh;
+
+  .transitioned {
+    flex: 1 0 10em;
+
+    transition: flex-basis 0.2s ease-in-out;
+  }
 `;
 
 export const ExportImportButtonsContainer = styled.div`
@@ -95,6 +102,7 @@ export const MainLink = styled(Link)`
 `;
 
 export const VacancyList = styled.div`
+  margin-top: 10px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -117,11 +125,18 @@ export const VacancyItemParagraph = styled.p`
   }
 `;
 
-export const VacancyItem = styled.div`
-  background-color: #fff;
+export const VacancyItem = styled.button`
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
   padding: 20px 5px;
   border-radius: 20px;
   border: 2px solid grey;
+
+  text-align: left;
+
+  font-family: inherit;
+  font-size: 16px;
 
   height: 180px;
   width: 30%;
@@ -129,6 +144,8 @@ export const VacancyItem = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+
+  transition: background-color 0.2s ease-in-out;
 
   &:nth-of-type(2) {
     ${VacancyItemHeader} {
@@ -141,4 +158,87 @@ export const VacancyItem = styled.div`
       color: #e29951;
     }
   }
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  ${({ current }) =>
+    current &&
+    css`
+      background-color: #fff;
+    `}
+`;
+
+export const ModalButton = styled.button`
+  cursor: pointer;
+  border: 2px solid grey;
+  padding: 5px 20px;
+
+  font-size: 16px;
+  font-family: inherit;
+
+  background-color: #fff;
+  margin-top: 30px;
+`;
+
+export const VacancyNote = styled.div`
+  background-color: #fff;
+  margin-top: 20px;
+
+  width: 50%;
+  height: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  &.transitioned {
+    flex: 0 0 0;
+    flex-basis: 0;
+  }
+
+  ${({ current }) =>
+    current &&
+    css`
+      &.transitioned {
+        border: 2px solid grey;
+        flex-basis: 200px;
+      }
+    `}
+
+  ${({ vacancyId }) =>
+    vacancyId !== -1 &&
+    css`
+      align-self: ${vacancyId === 0
+        ? 'flex-start'
+        : vacancyId === 1
+        ? 'center'
+        : 'flex-end'};
+    `}
+`;
+
+export const VacancyNoteContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const Vacancy = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 50%;
+
+  padding: 30px;
+`;
+
+export const VacancyTitle = styled.h3`
+  color: ##515d59;
+
+  font-size: 16px;
+  font-weight 700;
+  padding: 0;
+  margin: 0;
 `;

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const ROOT_ELEMENT = 'app';
 
-export function usePortal({ open, onClose, outsideRoot = true }) {
+export function usePortal({ open, onClose }) {
   const [active, setActive] = useState(false);
   const backdrop = useRef(null);
 
@@ -32,9 +32,6 @@ export function usePortal({ open, onClose, outsideRoot = true }) {
     if (open) {
       timeout = window.setTimeout(() => {
         setActive(open);
-
-        outsideRoot &&
-          document.querySelector(ROOT_ELEMENT)?.setAttribute('inert', 'true');
       }, 10);
     }
 
@@ -45,12 +42,9 @@ export function usePortal({ open, onClose, outsideRoot = true }) {
 
       timeout && clearTimeout(timeout);
 
-      outsideRoot &&
-        document.querySelector(ROOT_ELEMENT)?.removeAttribute('inert');
-
       window.removeEventListener('keyup', keyHandler);
     };
-  }, [open, onClose, outsideRoot, backdrop]);
+  }, [open, onClose, backdrop]);
 
   return {
     ref: backdrop,

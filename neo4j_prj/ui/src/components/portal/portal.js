@@ -1,13 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
 export function Portal({ children }) {
   const el = useMemo(() => document.createElement('div'), []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const target = document.body;
 
     target.appendChild(el);
+
     return () => {
       target.removeChild(el);
     };

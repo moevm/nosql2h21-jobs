@@ -14,6 +14,8 @@ module.exports = {
   },
   plugins: ['react', 'simple-import-sort', 'prettier', 'react-hooks'],
   rules: {
+    'no-nested-ternary': 'off',
+    'no-console': 'off',
     'no-unused-expressions': 'off',
     'react/no-array-index-key': 'off',
     'import/no-named-default': 'off',
@@ -32,7 +34,6 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'react/jsx-sort-props': 2,
     'no-restricted-globals': 0,
-    'no-console': ['warn', { allow: ['error'] }],
     'simple-import-sort/imports': [
       'error',
       {

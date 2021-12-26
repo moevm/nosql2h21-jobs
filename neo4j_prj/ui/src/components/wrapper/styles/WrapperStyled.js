@@ -10,6 +10,9 @@ export const WrapperStyled = styled(Router)`
   align-items: center;
   justify-content: center;
   height: 100vh;
+
+  max-height: 1080px;
+  max-width: 1920px;
 `;
 
 export const GlobalStyles = css`
@@ -29,5 +32,13 @@ export const GlobalStyles = css`
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-color: #f8d297;
+  }
+
+  @media only screen and (min-width: 1921px) {
+    body {
+      display: flex;
+      justify-content: center;
+      background-size: contain;
+    }
   }
 `;
