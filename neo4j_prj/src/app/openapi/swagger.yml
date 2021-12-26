@@ -462,7 +462,52 @@ paths:
           schema:
             type: integer
 
-#            def get(offset:int = 0,limit:int = 100):
+  #---------------------------------------------------------------------------------------------------------------------
+  /data/import:
+    get:
+      operationId: app.aux.neo_api.iimport
+      tags:
+        - data
+        - import
+      summary: All vacancy types
+      description: All vacancy types
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          schema:
+            type: string
+
+  /data/export:
+    get:
+      operationId: app.aux.neo_api.export
+      tags:
+        - data
+        - export
+      summary: All vacancy types
+      description: All vacancy types
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      parameters:
+        - name: offset
+          in: path
+          description: offset
+          required: true
+          schema:
+            type: string
 
 servers:
   - url: /api

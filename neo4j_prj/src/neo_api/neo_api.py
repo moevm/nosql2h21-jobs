@@ -167,12 +167,21 @@ class Neo_api(object):
         res = self.exec(query=q)
         return res
 
-    def filter(self, search_arg: str, areas: List[int] = None, currency: str = None, employer=None,
-               schedule=None):
+    def filter(self, search_arg: str, areas: List[int] = None, currency: str = None, employer: int = None,
+               schedule: str = None, offset: int = 0, limit: int = 100):
         q = f'CALL db.index.fulltext.queryNodes("descriptions", "{search_arg}~") YIELD node as v, score as s'
         if areas:
             q += f'match (v)--(a:Area) ' \
                  f'where a.id in {json.dump(areas)} '
+        if currency:
+            q += f'match (v)--(c:Currency{{name:{currency}}}) '
+        if schedule:
+            q += f'MATCH (n:Schedule{{id: "{schedule}"}})'
+        q += f'return v,s,c,a,k,sh,e,t' \
+             f'SKIP {offset}' \
+             f'LIMIT {limit}'
+        res = self.exec(q)
+
         # TODO
 
     def get_vacancy_list(self, offset=0, limit=100) -> List[Dict]:
@@ -307,11 +316,13 @@ class Neo_api(object):
     def get_top_need(self, offset: int = 0, limit: int = 10):
         q = f'MATCH (n:Vacancy) ' \
             f'WITH n order by n.m desc ' \
-            f'return n ' \
+            f'return n.id ' \
             f'SKIP {offset} ' \
             f'LIMIT {limit} '
         res = self.exec(q)
-        vacs = [dict(i[0]) for i in res]
+        ids = [i[0] for i in res]
+        vacs = self.get_vacancy_by_ids(ids)
+        # vacs = [dict(i[0]) for i in res]
         fro = random.randint(5, 10) * 10000
         fto = random.randint(11, 20) * 10000
         ret = {"items": vacs, "from": fro, "to": fto}
@@ -320,11 +331,13 @@ class Neo_api(object):
     def get_top_paid(self, offset: int = 0, limit: int = 10):
         q = f'MATCH (n:Vacancy) ' \
             f'WITH n order by n.m desc ' \
-            f'return n ' \
+            f'return n.id ' \
             f'SKIP {offset} ' \
             f'LIMIT {limit} '
         res = self.exec(q)
-        vacs = [dict(i[0]) for i in res]
+        ids = [i[0] for i in res]
+        vacs = self.get_vacancy_by_ids(ids)
+        # vacs = [dict(i[0]) for i in res]
         fro = random.randint(5, 10) * 10000
         fto = random.randint(11, 20) * 10000
         ret = {"items": vacs, "from": fro, "to": fto}
@@ -333,24 +346,35 @@ class Neo_api(object):
     def get_top_new(self, offset: int = 0, limit: int = 10):
         q = f'MATCH (n:Vacancy) ' \
             f'WITH n order by n.published_at desc ' \
-            f'return n ' \
+            f'return n.id ' \
             f'SKIP {offset} ' \
             f'LIMIT {limit} '
         res = self.exec(q)
-        vacs = [dict(i[0]) for i in res]
+        ids = [i[0] for i in res]
+        vacs = self.get_vacancy_by_ids(ids)
+        # vacs = [dict(i[0]) for i in res]
         fro = random.randint(5, 10) * 10000
         fto = random.randint(11, 20) * 10000
         ret = {"items": vacs, "from": fro, "to": fto}
         return ret
 
-    def export(self):
+    def export(self) -> str:
         q = 'MATCH (n:Vacancy) RETURN n.id'
         res = self.exec(q)
         ids = [i[0] for i in res]
         dd = json.dumps(ids)
-        b = base64.b64encode(text.encode())
+        b = base64.b64encode(dd.encode()).decode()
 
-        return ids
+        return b
+
+    def iimport(self, bdata: str):
+        try:
+            data = json.loads(base64.b64decode(bdata).decode())
+            q = f'MATCH (n:Vacancy) where n in {json.dumps(data)} RETURN n.id'
+            res = self.exec(q)
+        except:
+            res = False
+        return res
 
     def exec(self, query: str):
         transaction = lambda tx: tx.run(query).values()
