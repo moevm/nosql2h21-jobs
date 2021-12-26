@@ -1,4 +1,10 @@
 neo4j_prj/venv
-# neo4j_prj/neo4j/data/*
+neo4j_prj/neo4j/data/*
 neo4j_prj/neo4j/neo4j/*
 */.idea
+
+.vscode
+.DS_Store
+neo4j_prj/ui/node_modules
+neo4j_prj/ui/.parcel-cache
+neo4j_prj/ui/dist
