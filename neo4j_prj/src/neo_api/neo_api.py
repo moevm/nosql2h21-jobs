@@ -37,6 +37,9 @@ class Neo_api(object):
         if not self.driver:
             raise Exception(f"Neo4j connection timed out after {timeout_sec} sec")
 
+    def do_nothing(self):
+        pass
+
     @staticmethod
     def dict_to_neo(_dict: dict):
         s = ''
