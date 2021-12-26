@@ -221,7 +221,10 @@ class Neo_api(object):
             k: int
             v: Dict
             v["key_skills"] = self.get_kss_for_vac(k)
-            v.pop("Key_skill")
+            try:
+                v.pop("Key_skill")
+            except:
+                pass
         return list(vacs.values())
 
     def get_kss_for_vac(self, id: int) -> List[str]:

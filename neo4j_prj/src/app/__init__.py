@@ -1,25 +1,25 @@
 from pathlib import Path
 
-import flask.app
-from flask import send_file, Flask, jsonify
 # from swagger_ui_bundle import swagger_ui_path
 import connexion
+import flask.app
+from flask import send_file, jsonify
 from flask_cors import CORS
-from flask_swagger_ui import get_swaggerui_blueprint
 from werkzeug.exceptions import HTTPException
 
 from hh_api.hh_api import Hh_api
 from neo_api.neo_api import Neo_api
 from . import settings
 
-neo_api:Neo_api = None # Neo_api()
-hh_api:Hh_api = None # Hh_api()
+neo_api: Neo_api = None  # Neo_api()
+hh_api: Hh_api = None  # Hh_api()
+
 
 def create_app(config_filename: str = None):
     config = settings.read(config_filename)
     global neo_api
     global hh_api
-    neo_api = Neo_api()
+    neo_api = Neo_api(config.NEO4J_HOST)
     hh_api = Hh_api()
 
     # SWAGGER_URL = '/api/ui'

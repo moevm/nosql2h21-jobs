@@ -1,12 +1,13 @@
 {
-  "SWAGGER_URL" : "/api/ui",
-  "SWAGGER_DIR" : "openapi/",
-  "SWAGGER_FILE" : "swagger.yml",
-  "SWAGGER_PATH" : "openapi/swagger.yml",
-  "API_URL" : "/swagger",
-  "APP_NAME" : "Jobs_app",
-  "FLASK_APP" : "main.py",
-  "FLASK_ENV" : "development",
-  "FLASK_DEBUG" : true,
-  "DEBUG" : true
+  "SWAGGER_URL": "/api/ui",
+  "SWAGGER_DIR": "openapi/",
+  "SWAGGER_FILE": "swagger.yml",
+  "SWAGGER_PATH": "openapi/swagger.yml",
+  "NEO4J_HOST": "neo4j",
+  "API_URL": "/swagger",
+  "APP_NAME": "Jobs_app",
+  "FLASK_APP": "main.py",
+  "FLASK_ENV": "development",
+  "FLASK_DEBUG": true,
+  "DEBUG": true
 }
