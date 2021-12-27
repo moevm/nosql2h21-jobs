@@ -49,8 +49,8 @@ services:
       dockerfile: ./Dockerfile
     container_name: ui
     restart: unless-stopped
-    environment:
-      - SERVER_URL=neo_rest:5000
+    #    environment:
+    #      - SERVER_URL=neo_rest:5000
     ports:
       - "8080:8080"
 
