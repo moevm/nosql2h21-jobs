@@ -8,8 +8,11 @@ export const MainContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  height: 100%;
   width: 100%;
+  height: 100vh;
+
+  max-height: 1080px;
+  max-width: 1920px;
 
   padding: 10vh;
 

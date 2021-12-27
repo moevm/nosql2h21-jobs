@@ -9,10 +9,6 @@ export const WrapperStyled = styled(Router)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-
-  max-height: 1080px;
-  max-width: 1920px;
 `;
 
 export const GlobalStyles = css`
@@ -20,12 +16,14 @@ export const GlobalStyles = css`
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: inherit !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
   }
 
   body {
     width: 100%;
-    font-family: 'Bitter', serif !important;
+    font-family: 'Roboto', sans-serif !important;
 
     background-image: url(${background});
     background-size: auto 100%;

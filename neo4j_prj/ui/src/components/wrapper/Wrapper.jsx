@@ -13,7 +13,7 @@ export function Wrapper({ children }) {
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link crossOrigin href="https://fonts.gstatic.com" rel="preconnect" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </Helmet>
