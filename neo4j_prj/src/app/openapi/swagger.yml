@@ -695,11 +695,10 @@ paths:
 
   #---------------------------------------------------------------------------------------------------------------------
   /data/import:
-    get:
+    post:
       operationId: app.aux.neo_api.iimport
       tags:
         - data
-        - import
       summary: All vacancy types
       description: All vacancy types
       responses:
@@ -709,20 +708,26 @@ paths:
             application/json:
               schema:
                 type: array
-      parameters:
-        - name: data_str
-          in: query
-          description: offset
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+  #      parameters:
+  #        - name: data_str
+  #          in: query
+  #          description: offset
+  #          required: true
+  #          schema:
+  #            type: string
 
   /data/export:
     get:
       operationId: app.aux.neo_api.export
       tags:
         - data
-        - export
       summary: All vacancy types
       description: All vacancy types
       responses:

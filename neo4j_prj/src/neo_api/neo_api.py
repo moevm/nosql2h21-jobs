@@ -9,6 +9,7 @@ import time
 from time import sleep
 from typing import List, Dict
 
+from flask import request
 from neo4j import GraphDatabase
 
 from hh_api import preprocess as hh_prep
@@ -492,7 +493,8 @@ class Neo_api(object):
 
         return b
 
-    def iimport(self, bdata: str):
+    def iimport(self, bdata: str = ""):
+        print(request.data)
         try:
             data = json.loads(base64.b64decode(bdata).decode())
             q = f'MATCH (n:Vacancy) where n in {json.dumps(data)} RETURN n.id'

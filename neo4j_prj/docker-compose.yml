@@ -35,7 +35,7 @@ services:
       - neo4j
     restart: "no"
 
-  rest:
+  neo_rest:
     build:
       context: ./
       dockerfile: ./src/Dockerfile
@@ -43,6 +43,16 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
+  ui:
+    build:
+      context: ./ui
+      dockerfile: ./Dockerfile
+    container_name: ui
+    restart: unless-stopped
+    environment:
+      - SERVER_URL=neo_rest:5000
+    ports:
+      - "8080:8080"
 
 networks:
   default:
