@@ -386,18 +386,28 @@ paths:
           description: vacancy name
           required: true
           schema:
+            default: WA1
             type: string
+        - name: area_id
+          in: query
+          description: area id
+          required: true
+          schema:
+            example: 1
+            type: integer
         - name: currency
           in: query
           description: currency
           required: false
           schema:
+            default: RUR
             type: string
         - name: employer
           in: query
           description: employer
           required: false
           schema:
+            default: EM1
             type: string
         - name: schedule
           in: query
@@ -410,24 +420,28 @@ paths:
           description: requirement
           required: false
           schema:
+            default: R1
             type: string
         - name: responsibility
           in: query
           description: responsibility
           required: false
           schema:
+            default: R2
             type: string
         - name: salary_from
           in: query
           description: salary_from
           required: false
           schema:
+            default: 1
             type: integer
         - name: salary_to
           in: query
           description: salary_to
           required: false
           schema:
+            default: 2
             type: integer
 
 
