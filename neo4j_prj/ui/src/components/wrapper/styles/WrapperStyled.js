@@ -20,11 +20,12 @@ export const GlobalStyles = css`
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: inherit !important;
   }
 
   body {
     width: 100%;
-    font-family: 'Bitter', serif;
+    font-family: 'Bitter', serif !important;
 
     background-image: url(${background});
     background-size: auto 100%;
