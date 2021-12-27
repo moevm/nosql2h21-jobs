@@ -77,6 +77,7 @@ paths:
           required: true
           schema:
             type: string
+
   /area/:
     post:
       operationId: app.area.post
@@ -152,6 +153,29 @@ paths:
             application/json:
               schema:
                 type: integer
+
+  /area/cnt_by/{limit}:
+    get:
+      operationId: app.aux.neo_api.get_cnt_by_area
+      tags:
+        - area
+      summary: Cnt of vac per area
+      description: Cnt of vac per area
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                example: 10
+                type: integer
+      parameters:
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          schema:
+            type: integer
 
   #---------------------------------------------------------------------------------------------------------------------
   /employer/{id}:
@@ -361,7 +385,7 @@ paths:
           schema:
             type: integer
 
-  /vacancy/:
+  /vacancy:
     post:
       operationId: app.aux.neo_api.create_vacancy
       tags:

@@ -360,6 +360,14 @@ class Neo_api(object):
         kss = [dict(i[0]) for i in res]
         return kss
 
+    def get_area_name(self, id):
+        vacs = self.get_area(id)
+        if vacs:
+            vac = vacs[0]
+        else:
+            return "None"
+        return vac["name"]
+
     def get_vac_name(self, id):
         vacs = self.get_vacancy_by_ids([id])
         if vacs:
@@ -468,7 +476,10 @@ class Neo_api(object):
         return res[0][0]
 
     def get_cnt_by_area(self, limit: int = 10):
-        pass
+        areas = self.get_area_list(0, limit)
+        ids = [area.get("id") or 0 for area in areas]
+        data = {self.get_area_name(id): self.get_in_area_cnt(id) for id in ids}
+        return data
 
     def export(self) -> str:
         q = 'MATCH (n:Vacancy) RETURN n.id'
