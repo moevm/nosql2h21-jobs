@@ -1,7 +1,10 @@
+import { useToast } from '@chakra-ui/react';
 import { navigate } from '@reach/router';
 
 import { useCallback, useEffect, useState } from 'react';
 import { FcDownload, FcUpload, HiSearchCircle } from 'react-icons/all';
+
+import { saveAs } from 'file-saver';
 
 import { Modal, useModal } from '../components';
 import { SERVER_URL } from '../utils/constants';
@@ -9,6 +12,7 @@ import { plural } from '../utils/plural';
 import {
   ExportImportButton,
   ExportImportButtonsContainer,
+  FileInput,
   MainContainer,
   MainContent,
   MainHeader,
@@ -47,6 +51,8 @@ const vacancies = [
 ];
 
 export function Main() {
+  const toast = useToast();
+
   const {
     isModalOpened: isExportOpen,
     handleModalOpen: handleOpenExport,
@@ -89,6 +95,56 @@ export function Main() {
   const handleSearch = useCallback(() => {
     navigate('/list', { state: { search } });
   }, [search]);
+
+  const handleExport = useCallback(() => {
+    fetch(`${SERVER_URL}/api/data/export`)
+      .then((res) => res.text())
+      .then((base64Text) => {
+        const blob = new Blob([base64Text], {
+          type: 'text/plain;charset=utf-8',
+        });
+
+        saveAs(blob, 'data_export.txt');
+
+        toast({
+          title: 'База данных сохранена!',
+          description: 'Вы успешно сохранили базу данных из файла',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+
+        handleExportClose();
+      });
+  }, [handleExportClose, toast]);
+
+  const handleImport = useCallback(
+    ({ target: { files } }) => {
+      const [fileData] = files;
+
+      const fileReader = new FileReader();
+
+      fileReader.readAsText(fileData);
+
+      fileReader.onload = () => {
+        fetch(`${SERVER_URL}/api/data/import`, {
+          method: 'POST',
+          body: `${fileReader.result}`,
+        }).then(() => {
+          toast({
+            title: 'База данных загружена!',
+            description: 'Вы успешно загрузили базу данных из файла',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          });
+
+          handleImportClose();
+        });
+      };
+    },
+    [handleImportClose, toast]
+  );
 
   return (
     <MainContainer>
@@ -180,13 +236,21 @@ export function Main() {
 
       <Modal onClose={handleExportClose} open={isExportOpen}>
         <FcDownload size={140} />
-        <ModalButton>скачать файл</ModalButton>
+        <ModalButton onClick={handleExport}>скачать файл</ModalButton>
         <ModalButton onClick={handleExportClose}>закрыть</ModalButton>
       </Modal>
 
       <Modal onClose={handleImportClose} open={isImportOpen}>
         <FcUpload size={140} />
-        <ModalButton>загрузить файл</ModalButton>
+        <FileInput>
+          загрузить файл
+          <input
+            accept=".txt"
+            onChange={handleImport}
+            placeholder="загрузить файл"
+            type="file"
+          />
+        </FileInput>
         <ModalButton onClick={handleImportClose}>закрыть</ModalButton>
       </Modal>
     </MainContainer>

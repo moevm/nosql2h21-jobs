@@ -186,6 +186,22 @@ export const ModalButton = styled.button`
   margin-top: 30px;
 `;
 
+export const FileInput = styled.label`
+  cursor: pointer;
+  border: 2px solid grey;
+  padding: 5px 20px;
+
+  font-size: 16px;
+  font-family: inherit;
+
+  background-color: #fff;
+  margin-top: 30px;
+
+  & input[type='file'] {
+    display: none;
+  }
+`;
+
 export const VacancyNote = styled.div`
   background-color: #fff;
   margin-top: 20px;

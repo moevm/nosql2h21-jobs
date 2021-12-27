@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "parcel src/index.html --dist-dir dist --public-url / --no-source-maps",
+    "start": "rm -rf .parcel-cache && parcel src/index.html --dist-dir dist --public-url / --no-source-maps",
     "build": "parcel build src/index.html --dist-dir dist --public-url ./ --no-source-maps"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "beautiful-react-diagrams": "^0.5.1",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
+    "file-saver": "^2.0.5",
     "framer-motion": "^5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -89,7 +89,7 @@ export function List({ location: { state } }) {
 
   const [filteredData, setFilteredData] = useState([]);
 
-  const [schema, { onChange }] = useSchema({});
+  const [schema, { onChange }] = useSchema({ nodes: [] });
 
   const [selectedVacancy, setSelectedVacancy] = useState(-1);
 
@@ -145,7 +145,7 @@ export function List({ location: { state } }) {
           links: items.map(({ vacancy_id: vacancyId, cnt }) => ({
             input: selectedVacancy.toString(),
             output: vacancyId.toString(),
-            label: cnt,
+            label: cnt.toString(),
           })),
         });
 
@@ -307,11 +307,11 @@ export function List({ location: { state } }) {
         </ListItemsContainer>
       </ListContent>
 
-      <Modal onClose={handleGraphClose} open={isGraphOpen} />
-
-      <Modal big onClose={handleDiagramClose} open={isDiagramOpen}>
+      <Modal big onClose={handleGraphClose} open={isGraphOpen}>
         <Diagram onChange={onChange} schema={schema} />
       </Modal>
+
+      <Modal onClose={handleDiagramClose} open={isDiagramOpen} />
 
       <Modal onClose={handleCreateClose} open={isCreateOpen}>
         <Stack
