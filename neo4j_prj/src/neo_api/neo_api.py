@@ -378,7 +378,7 @@ class Neo_api(object):
         x1 = 700
         w = x1 - x0
         y0 = 150
-        y1 = 650
+        y1 = 200
         h = y1 - y0
         # a0=.1
         # a1=.9
@@ -407,6 +407,7 @@ class Neo_api(object):
         ret["cy"] = y0
         ret["len"] = len(vacs)
         ret["name"] = self.get_vac_name(id)
+        # ret["vacancy_id"] = id
 
         return ret
 
@@ -460,6 +461,14 @@ class Neo_api(object):
         fto = random.randint(11, 20) * 10000
         ret = {"items": vacs, "from": fro, "to": fto}
         return ret
+
+    def get_in_area_cnt(self, id: int):
+        q = f'MATCH (n:Area{{id:{id}}})-[l]-(a:Vacancy) RETURN count(n)'
+        res = self.exec(q)
+        return res[0][0]
+
+    def get_cnt_by_area(self, limit: int = 10):
+        pass
 
     def export(self) -> str:
         q = 'MATCH (n:Vacancy) RETURN n.id'
