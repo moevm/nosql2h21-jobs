@@ -1,18 +1,18 @@
 {
-  "name": "models",
+  "name": "ui",
   "version": "1.0.0",
-  "repository": "git@gitlab.com:obergodmar/models.git",
-  "author": "Vitaly <obergodmar@gmail.com>",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "parcel src/index.html --dist-dir dist --public-url / --no-source-maps",
     "build": "parcel build src/index.html --dist-dir dist --public-url ./ --no-source-maps"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.7.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@reach/router": "^1.3.4",
     "@swc/helpers": "^0.3.2",
+    "framer-motion": "^5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",

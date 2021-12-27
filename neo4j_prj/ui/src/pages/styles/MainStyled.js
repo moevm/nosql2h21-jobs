@@ -95,6 +95,7 @@ export const MainSearchButton = styled.button`
 `;
 
 export const MainLink = styled(Link)`
+  text-decoration: underline;
   display: block;
   color: #fff;
   font-size: 18px;
@@ -202,7 +203,7 @@ export const VacancyNote = styled.div`
     css`
       &.transitioned {
         border: 2px solid grey;
-        flex-basis: 200px;
+        flex-basis: 300px;
       }
     `}
 
@@ -241,4 +242,10 @@ export const VacancyTitle = styled.h3`
   font-weight 700;
   padding: 0;
   margin: 0;
+`;
+
+export const VacancyParagraph = styled.p`
+  color: #686868;
+  font-size: 14px;
+  margin-top: 5px;
 `;
