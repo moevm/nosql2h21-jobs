@@ -57,11 +57,9 @@ const initialPayload = {
   salary_to: 500000,
 };
 
-export function List({
-  location: {
-    state: { search: initialSearch },
-  },
-}) {
+export function List({ location: { state } }) {
+  const initialSearch = state?.search || '';
+
   const toast = useToast();
 
   const {
