@@ -296,15 +296,11 @@ paths:
             type: string
 
   #---------------------------------------------------------------------------------------------------------------------
-
-
-  #---------------------------------------------------------------------------------------------------------------------
   /schedule/:
     get:
       operationId: app.schedule.get
       tags:
         - aux
-        - schedule
       summary: All schedules
       description: All schedules
       responses:
@@ -320,7 +316,6 @@ paths:
       operationId: app.vacancy_type.get
       tags:
         - aux
-        - vacancy_type
       summary: All vacancy types
       description: All vacancy types
       responses:
@@ -366,10 +361,85 @@ paths:
           schema:
             type: integer
 
+  /vacancy/:
+    post:
+      operationId: app.aux.neo_api.create_vacancy
+      tags:
+        - vacancy
+      summary: Create vacancy
+      description: Create vacancy
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Area"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: name
+          in: query
+          description: vacancy name
+          required: true
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: currency
+          required: false
+          schema:
+            type: string
+        - name: employer
+          in: query
+          description: employer
+          required: false
+          schema:
+            type: string
+        - name: schedule
+          in: query
+          description: schedule
+          required: false
+          schema:
+            type: string
+        - name: requirement
+          in: query
+          description: requirement
+          required: false
+          schema:
+            type: string
+        - name: responsibility
+          in: query
+          description: responsibility
+          required: false
+          schema:
+            type: string
+        - name: salary_from
+          in: query
+          description: salary_from
+          required: false
+          schema:
+            type: integer
+        - name: salary_to
+          in: query
+          description: salary_to
+          required: false
+          schema:
+            type: integer
+
+
+
+
+
   /vacancy/{id}:
     delete:
       summary: Delete vac
       operationId: app.aux.neo_api.del_vac
+      tags:
+        - vacancy
       responses:
         "200":
           description: OK
@@ -603,7 +673,7 @@ paths:
                 type: array
       parameters:
         - name: offset
-          in: path
+          in: query
           description: offset
           required: true
           schema:

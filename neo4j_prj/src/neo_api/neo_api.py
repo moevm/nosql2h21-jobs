@@ -143,9 +143,9 @@ class Neo_api(object):
         res = self.exec(q)
         return [dict(i[0]) for i in res]
 
-    def create_vacancy(self, name: str, area_id: int, currency: str, employer: str, schedule: str,
+    def create_vacancy(self, name: str, area_id: int, schedule: str = "fullDay",
                        requirement: str = "", responsibility: str = "", salary_from: int = 0,
-                       salary_to: int = 500000):
+                       salary_to: int = 500000, currency: str = 'RUR', employer: str = "None"):
 
         vid = random.randint(10, 100000)
         while (self.get_vacancy_by_ids([vid])):
@@ -168,6 +168,11 @@ class Neo_api(object):
         area = self.get_area(area_id)[0]
         currency = {"name": currency}
         schedule = {"id": schedule}
+        type = {"id": "open"}
+        employer = {"id": self.get_max_employer() + 1, "name": employer}
+        self.create_vacancy_all({"vacancy": vacancy, "area": area, "currency": currency, "employer": employer,
+                                 "schedule": schedule, "type": type})
+        return vid
 
     def create_vacancy_all(self, vacancy_all: Dict):
         vac_all = vacancy_all
@@ -355,7 +360,13 @@ class Neo_api(object):
         kss = [dict(i[0]) for i in res]
         return kss
 
-    # def create
+    def get_vac_name(self, id):
+        vacs = self.get_vacancy_by_ids([id])
+        if vacs:
+            vac = vacs[0]
+        else:
+            return "None"
+        return vac["name"]
 
     def get_similar_vacs_by_ks_all(self, id: int, limit: int = 10):
         q = f'match (a:Vacancy)--(k:Key_skill)--(b:Vacancy) where a.id = {id} and b.id<>a.id return b.id'
@@ -378,7 +389,8 @@ class Neo_api(object):
             # x = x0+ w/l*i
             # y = y1
             ks = self.get_vacs_common_ks(id, id1)
-            vacs.append({"vacancy_id": id1, "common_key_skills": ks, "cnt": len(ks)})
+            vacs.append({"vacancy_id": id1, "common_key_skills": ks, "cnt": len(ks),
+                         "name": self.get_vac_name(id1)})
 
         vacs.sort(key=lambda v: v["cnt"])
         vacs = vacs[:min(limit, len(vacs))]
@@ -394,6 +406,7 @@ class Neo_api(object):
         ret["cx"] = x0 + w / 2
         ret["cy"] = y0
         ret["len"] = len(vacs)
+        ret["name"] = self.get_vac_name(id)
 
         return ret
 
@@ -402,9 +415,6 @@ class Neo_api(object):
         res = self.exec(q)
         print(res)
         return True
-
-    def get_most_req_ks(self):  # TODO
-        pass
 
     def get_top_need(self, offset: int = 0, limit: int = 10):
         q = f'MATCH (n:Vacancy) ' \
