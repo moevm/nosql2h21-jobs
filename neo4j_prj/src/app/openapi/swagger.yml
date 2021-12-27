@@ -336,7 +336,7 @@ paths:
   #---------------------------------------------------------------------------------------------------------------------
 
 
-  /vacancy/sim/{id}/:
+  /vacancy/sim/{id}/{limit}:
     get:
       operationId: app.aux.neo_api.get_similar_vacs_by_ks_all
       tags:
@@ -355,7 +355,14 @@ paths:
           in: path
           description: vacancy id
           required: true
-          example: 0
+          example: 50217143
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          description: limit
+          required: true
+          example: 10
           schema:
             type: integer
 

@@ -328,18 +328,44 @@ class Neo_api(object):
         kss = [dict(i[0]) for i in res]
         return kss
 
-    def get_similar_vacs_by_ks_all(self, id: int):
+    def get_similar_vacs_by_ks_all(self, id: int, limit: int = 10):
         q = f'match (a:Vacancy)--(k:Key_skill)--(b:Vacancy) where a.id = {id} and b.id<>a.id return b.id'
         res = self.exec(q)
         ids = [i[0] for i in res]
-        ret = []
-        x0 = 0
-        x1 = 800
-        y0 = 0
-        y1 = 800
-        for id1 in ids:
+        vacs = []
+        ret = {}
+        x0 = 100
+        x1 = 700
+        w = x1 - x0
+        y0 = 150
+        y1 = 650
+        h = y1 - y0
+        # a0=.1
+        # a1=.9
+        b1 = .3
+        b2 = .7
+        l = len(ids)
+        for i, id1 in enumerate(ids):
+            # x = x0+ w/l*i
+            # y = y1
             ks = self.get_vacs_common_ks(id, id1)
-            ret.append({"vacancy_id": id1, "common_key_skills": ks, "cnt": len(ks)})
+            vacs.append({"vacancy_id": id1, "common_key_skills": ks, "cnt": len(ks)})
+
+        vacs.sort(key=lambda v: v["cnt"])
+        vacs = vacs[:min(limit, len(vacs))]
+        l = len(vacs)
+
+        for i, vac in enumerate(vacs):
+            x = x0 + w / l * i
+            y = y1
+            vac["cx"] = x
+            vac["cy"] = y
+
+        ret["items"] = vacs
+        ret["cx"] = x0 + w / 2
+        ret["cy"] = y0
+        ret["len"] = len(vacs)
+
         return ret
 
     def get_most_req_ks(self):  # TODO
