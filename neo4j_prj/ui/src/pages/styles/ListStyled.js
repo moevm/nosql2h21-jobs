@@ -10,7 +10,7 @@ export const ListStyledContainer = styled.div`
   height: auto;
   flex-grow: 1;
 
-  margin: 5vh 5vh 0 5vh;
+  margin: 5vh 5vw 0 5vw;
   background-color: #fff;
   border: 4px solid grey;
 `;
@@ -21,7 +21,7 @@ export const ListMenu = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  width: 20%;
+  width: 20vw;
   height: 100%;
   padding: 20px 10px 20px 20px;
 `;
@@ -35,9 +35,9 @@ export const ListContent = styled.div`
 `;
 
 export const ListButtonsContainer = styled.div`
-  position: absolute;
-  top: 100px;
-  right: 20px;
+  position: fixed;
+  top: calc(5vh + 105px);
+  right: calc(5vw + 20px);
 `;
 
 export const ListButton = styled.button`

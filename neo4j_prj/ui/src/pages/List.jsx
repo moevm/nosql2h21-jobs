@@ -1,17 +1,33 @@
 import {
   Button,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Radio,
   RadioGroup,
   RangeSlider,
   RangeSliderFilledTrack,
   RangeSliderThumb,
   RangeSliderTrack,
+  Select,
   Stack,
+  Textarea,
+  useToast,
 } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 
 import { useCallback, useEffect, useState } from 'react';
 import { HiSearchCircle } from 'react-icons/all';
 
+import 'beautiful-react-diagrams/styles.css';
+import Diagram, { createSchema, useSchema } from 'beautiful-react-diagrams';
+
+import { Modal, useModal, Vacancy } from '../components';
 import { SERVER_URL } from '../utils/constants';
 import {
   Filter,
@@ -29,17 +45,57 @@ import {
   ListStyledContainer,
 } from './styles';
 
+const initialPayload = {
+  name: '',
+  area_id: -1,
+  currency: 'RUR',
+  employer: '',
+  schedule: '',
+  requirement: '',
+  responsibility: '',
+  salary_from: 0,
+  salary_to: 500000,
+};
+
 export function List({
   location: {
     state: { search: initialSearch },
   },
 }) {
+  const toast = useToast();
+
+  const {
+    isModalOpened: isGraphOpen,
+    handleModalOpen: handleOpenGraph,
+    handleModalClose: handleGraphClose,
+  } = useModal();
+
+  const {
+    isModalOpened: isDiagramOpen,
+    handleModalOpen: handleOpenDiagram,
+    handleModalClose: handleDiagramClose,
+  } = useModal();
+
+  const {
+    isModalOpened: isCreateOpen,
+    handleModalOpen: handleOpenCreate,
+    handleModalClose: handleCreateClose,
+  } = useModal();
+
   const [search, setSearch] = useState(initialSearch);
   const [area, setArea] = useState(-1);
   const [salary, setSalary] = useState([0, 500000]);
 
   const [areaData, setAreaData] = useState([]);
   const [moreAreas, setMoreAreas] = useState(false);
+
+  const [filteredData, setFilteredData] = useState([]);
+
+  const [schema, { onChange }] = useSchema({});
+
+  const [selectedVacancy, setSelectedVacancy] = useState(-1);
+
+  const [payload, setPayload] = useState(initialPayload);
 
   useEffect(() => {
     fetch(`${SERVER_URL}/api/area/list?offset=0&limit=100`)
@@ -57,13 +113,61 @@ export function List({
       `${SERVER_URL}/api/vacancy/filter/?search_arg=${payloadSearch}${payloadArea}&currency=RUR&sf=${salary[0]}&st=${salary[1]}&offset=0&limit=100`
     )
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => setFilteredData(data));
   }, [area, search, salary]);
 
   useEffect(() => {
     handleFilter();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (selectedVacancy === -1) {
+      return;
+    }
+
+    fetch(`${SERVER_URL}/api/vacancy/sim/${selectedVacancy}/10`)
+      .then((res) => res.json())
+      .then((value) => {
+        console.log(value);
+        const newSchema = createSchema({
+          nodes: [
+            { id: 'node-1', content: 'Node 1', coordinates: [250, 60] },
+            { id: 'node-2', content: 'Node 2', coordinates: [100, 200] },
+            { id: 'node-3', content: 'Node 3', coordinates: [250, 220] },
+            { id: 'node-4', content: 'Node 4', coordinates: [400, 200] },
+          ],
+          links: [
+            { input: 'node-1', output: 'node-2' },
+            { input: 'node-1', output: 'node-3' },
+            { input: 'node-1', output: 'node-4' },
+          ],
+        });
+
+        onChange(newSchema);
+      });
+  }, [onChange, selectedVacancy]);
+
+  const handleSave = useCallback(() => {
+    setPayload(initialPayload);
+  }, []);
+
+  const handleDelete = useCallback(
+    (id) => () => {
+      fetch(`${SERVER_URL}/api/vacancy/sim/${selectedVacancy}/10`, {
+        method: 'delete',
+      }).then(() => {
+        toast({
+          title: 'Вакансия удалена',
+          description: 'Вы успешно удалили вакансию',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+    },
+    [selectedVacancy, toast]
+  );
 
   return (
     <ListStyledContainer>
@@ -100,7 +204,7 @@ export function List({
         </Filter>
 
         <FilterTitle>Уровень дохода</FilterTitle>
-        <RangeSlider onChange={setSalary} value={salary}>
+        <RangeSlider max={500000} onChange={setSalary} value={salary}>
           <RangeSliderTrack>
             <RangeSliderFilledTrack />
           </RangeSliderTrack>
@@ -113,7 +217,6 @@ export function List({
           <span>{salary[1]}</span>
         </FilterValues>
       </ListMenu>
-
       <ListContent>
         <ListSearchContainer>
           <ListSearchInput
@@ -129,13 +232,166 @@ export function List({
         </ListSearchContainer>
 
         <ListButtonsContainer>
-          <ListButton>Построить диаграмму</ListButton>
-          <ListButton>Построить граф</ListButton>
-          <ListButton>Разместить вакансию</ListButton>
+          <ListButton
+            {...(selectedVacancy === -1 ? {} : { onClick: handleOpenDiagram })}>
+            Построить диаграмму
+          </ListButton>
+          <ListButton
+            {...(selectedVacancy === -1 ? {} : { onClick: handleOpenGraph })}>
+            Построить граф
+          </ListButton>
+          <ListButton onClick={handleOpenCreate}>
+            Разместить вакансию
+          </ListButton>
         </ListButtonsContainer>
 
-        <ListItemsContainer>Нет данных</ListItemsContainer>
+        <ListItemsContainer>
+          {filteredData.length > 0
+            ? filteredData.map(({ id, salary_from: salaryFrom, ...rest }) => (
+                <Vacancy
+                  key={id}
+                  {...rest}
+                  onClick={() => setSelectedVacancy(id)}
+                  onRemoveClick={handleDelete(id)}
+                  salaryFrom={salaryFrom}
+                  selected={id === selectedVacancy}
+                />
+              ))
+            : 'Нет данных'}
+        </ListItemsContainer>
       </ListContent>
+
+      <Modal onClose={handleGraphClose} open={isGraphOpen}>
+        <Diagram schema={schema} />
+      </Modal>
+
+      <Modal onClose={handleDiagramClose} open={isDiagramOpen}>
+        <Diagram onChange={onChange} schema={schema} />
+      </Modal>
+
+      <Modal onClose={handleCreateClose} open={isCreateOpen}>
+        <Stack
+          css={css`
+            width: 100%;
+            height: 100%;
+          `}
+          spacing={3}>
+          <Stack direction="row">
+            <Input
+              onChange={({ target: { value } }) =>
+                setPayload((prev) => ({ ...prev, name: value }))
+              }
+              placeholder="Введите название вакансии"
+              value={payload.name}
+            />
+            <Button colorScheme="teal" onClick={handleSave}>
+              Сохранить
+            </Button>
+            <Button
+              colorScheme="red"
+              onClick={handleCreateClose}
+              variant="outline">
+              Отменить
+            </Button>
+          </Stack>
+
+          <InputGroup>
+            <InputLeftAddon>Введите заработную плату от</InputLeftAddon>
+            <NumberInput
+              css={css`
+                width: 100%;
+              `}
+              onChange={(_, value) =>
+                setPayload((prev) => ({ ...prev, salary_from: value }))
+              }
+              value={payload.salary_from}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </InputGroup>
+
+          <InputGroup>
+            <InputLeftAddon>Введите заработную плату до</InputLeftAddon>
+            <NumberInput
+              css={css`
+                width: 100%;
+              `}
+              onChange={(_, value) =>
+                setPayload((prev) => ({ ...prev, salary_to: value }))
+              }
+              value={payload.salary_to}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </InputGroup>
+
+          <InputGroup>
+            <InputLeftAddon>Введите название компании</InputLeftAddon>
+            <Input
+              onChange={({ target: { value } }) =>
+                setPayload((prev) => ({ ...prev, employer: value }))
+              }
+              type="text"
+              value={payload.employer}
+            />
+          </InputGroup>
+
+          <Select
+            onChange={({ target: { value } }) =>
+              setPayload((prev) => ({ ...prev, area_id: value }))
+            }
+            placeholder="Выберите город"
+            value={payload.area_id}>
+            {areaData.map(({ id, name }) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            onChange={({ target: { value } }) =>
+              setPayload((prev) => ({ ...prev, schedule: value }))
+            }
+            placeholder="Выберите режим работы"
+            value={payload.schedule}>
+            <option value="fullDay">Полный день</option>
+            <option value="remote">Удаленная работа</option>
+            <option value="flexible">Гибкий график</option>
+            <option value="shift">Сменный график</option>
+          </Select>
+
+          <InputGroup>
+            <InputLeftAddon>Введите требования</InputLeftAddon>
+            <Textarea
+              onChange={({ target: { value } }) =>
+                setPayload((prev) => ({ ...prev, requirement: value }))
+              }
+              resize="none"
+              size="sm"
+              value={payload.requirement}
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <InputLeftAddon>Введите зоны ответственности</InputLeftAddon>
+            <Textarea
+              onChange={({ target: { value } }) =>
+                setPayload((prev) => ({ ...prev, responsibility: value }))
+              }
+              resize="none"
+              size="sm"
+              value={payload.responsibility}
+            />
+          </InputGroup>
+        </Stack>
+      </Modal>
     </ListStyledContainer>
   );
 }
