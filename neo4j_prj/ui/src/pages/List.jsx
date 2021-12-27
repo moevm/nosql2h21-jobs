@@ -154,9 +154,10 @@ export function List({ location: { state } }) {
   }, [onChange, selectedVacancy]);
 
   const handleSave = useCallback(() => {
-    fetch(`${SERVER_URL}/api/vacancy`, {
+    const searchParams = new URLSearchParams(payload);
+
+    fetch(`${SERVER_URL}/api/vacancy?${searchParams.toString()}`, {
       method: 'post',
-      body: JSON.stringify(payload),
     }).then(() => {
       setPayload(initialPayload);
 
