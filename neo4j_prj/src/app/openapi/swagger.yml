@@ -462,6 +462,78 @@ paths:
           schema:
             type: integer
 
+  /vacancy/filter/:
+    get:
+      operationId: app.aux.neo_api.filter
+      tags:
+        - vacancy
+      summary: Vacancy summary
+      description: Vacancy description
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "foo"
+        "204":
+          description: OK. Empty responce
+      parameters:
+        - name: search_arg
+          in: query
+          description: Search string
+          required: true
+          example: Аналитик
+          schema:
+            type: string
+        - name: areas
+          in: query
+          required: false
+          description: Array of area id's
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: currency
+          in: query
+          required: false
+          description: Currency of salary
+          example: "RUR"
+          schema:
+            type: string
+            default: "RUR"
+        - name: sf
+          in: query
+          description: salary from
+          required: false
+          example: 0
+          schema:
+            type: integer
+        - name: st
+          in: query
+          description: salary to
+          required: false
+          example: 500000
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: offset
+          required: true
+          example: 0
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: limit
+          required: true
+          example: 100
+          schema:
+            type: integer
+
   #---------------------------------------------------------------------------------------------------------------------
   /data/import:
     get:

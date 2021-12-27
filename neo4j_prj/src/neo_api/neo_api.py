@@ -10,6 +10,8 @@ from typing import List, Dict
 
 from neo4j import GraphDatabase
 
+from hh_api import preprocess as hh_prep
+
 
 @contextlib.contextmanager
 def nostdout():
@@ -51,7 +53,7 @@ class Neo_api(object):
 
     ## % AREA
     def get_area_list(self, offset=0, limit=100) -> List[Dict]:
-        q = f'match (n:Area) return n SKIP {offset} LIMIT {limit}'
+        q = f'match (n:Area) with n order by n.id return n SKIP {offset} LIMIT {limit}'
         res = self.exec(q)
         res = [dict(i[0]) for i in res]
         return res
@@ -168,21 +170,40 @@ class Neo_api(object):
         return res
 
     def filter(self, search_arg: str, areas: List[int] = None, currency: str = None, employer: int = None,
+               sf: int = 0, st: int = 500000,
                schedule: str = None, offset: int = 0, limit: int = 100):
-        q = f'CALL db.index.fulltext.queryNodes("descriptions", "{search_arg}~") YIELD node as v, score as s'
+        q = f'CALL db.index.fulltext.queryNodes("descriptions", "{search_arg}~") YIELD node as v, score as s '
+        v = 'v'  # v,s,c,a,k,sh,e,t
         if areas:
             q += f'match (v)--(a:Area) ' \
                  f'where a.id in {json.dump(areas)} '
+            v += ',a'
         if currency:
-            q += f'match (v)--(c:Currency{{name:{currency}}}) '
+            q += f'match (v)--(c:Currency{{name:"{currency}"}}) '
+            v += ',c'
         if schedule:
-            q += f'MATCH (n:Schedule{{id: "{schedule}"}})'
-        q += f'return v,s,c,a,k,sh,e,t' \
-             f'SKIP {offset}' \
-             f'LIMIT {limit}'
+            q += f'MATCH (sh:Schedule{{id: "{schedule}"}})'
+            v += ',sh'
+        q += f'return {v} ' \
+             f'SKIP {offset} ' \
+             f'LIMIT {limit} '
         res = self.exec(q)
 
+        return [dict(i[0]) for i in res]
+
         # TODO
+
+    def populate(self, qu: str = "Аналитик", page: int = 0, per_page: int = 100):
+        # hh = hh_api.Hh_api()
+        from app import hh_api as hh
+        vacs = hh.get_vacancy_by_name(name="Аналитик", num_of_pages=1)
+
+        for vac in vacs:
+            vac_all = hh_prep.preproc_vacancy(vac)
+            try:
+                self.create_vacancy_all(vac_all)
+            except:
+                pass
 
     def get_vacancy_list(self, offset=0, limit=100) -> List[Dict]:
         q_id = f"MATCH (n:Vacancy) return n.id SKIP {offset} LIMIT {limit}"
