@@ -174,6 +174,7 @@ class Neo_api(object):
                schedule: str = None, offset: int = 0, limit: int = 100):
         q = f'CALL db.index.fulltext.queryNodes("descriptions", "{search_arg}~") YIELD node as v, score as s '
         v = 'v'  # v,s,c,a,k,sh,e,t
+        vv = 'v.id'
         if areas:
             q += f'match (v)--(a:Area) ' \
                  f'where a.id in {json.dumps(areas)} '
@@ -184,12 +185,15 @@ class Neo_api(object):
         if schedule:
             q += f'MATCH (sh:Schedule{{id: "{schedule}"}})'
             v += ',sh'
-        q += f'return {v} ' \
+        q += f'return {vv} ' \
              f'SKIP {offset} ' \
              f'LIMIT {limit} '
         res = self.exec(q)
+        ids = [i[0] for i in res]
+        vacs = self.get_vacancy_by_ids(ids)
+        return vacs
 
-        return [dict(i[0]) for i in res]
+        # return [dict(i[0]) for i in res]
 
         # TODO
 
@@ -329,6 +333,10 @@ class Neo_api(object):
         res = self.exec(q)
         ids = [i[0] for i in res]
         ret = []
+        x0 = 0
+        x1 = 800
+        y0 = 0
+        y1 = 800
         for id1 in ids:
             ks = self.get_vacs_common_ks(id, id1)
             ret.append({"vacancy_id": id1, "common_key_skills": ks, "cnt": len(ks)})
