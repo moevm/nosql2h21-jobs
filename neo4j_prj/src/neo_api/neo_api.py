@@ -197,8 +197,10 @@ class Neo_api(object):
             q += f'MERGE (v)-[:HAS_KS]->(k{i}) '
 
         q += 'RETURN v,a,c,e,s,t '
-
-        res = self.exec(query=q)
+        try:
+            res = self.exec(query=q)
+        except:
+            res = None
         return res
 
     def filter(self, search_arg: str, areas: List[int] = None, currency: str = None, employer: int = None,
@@ -499,13 +501,27 @@ class Neo_api(object):
             res = False
         return res
 
+    def get_total_count(self):
+        q = 'match(n) return count(n)'
+        res = self.exec(q)
+        return res[0][0]
+
     def create_search_index_if_not_exest(self):
         exists = str(self.exec("CALL db.indexes")).find("FULLTEXT") != -1
         res = None
         if not exists:
             q = "CALL db.index.fulltext.createNodeIndex('descriptions', ['Vacancy'], ['name','responsibility', 'requirement'], {analyzer: 'russian'})"
-            res = self.exec(q)
-        return bool(res)
+            q1 = 'CREATE CONSTRAINT ON (n:Vacancy) ASSERT n.id IS UNIQUE'
+            try:
+                res = self.exec(q)
+            except:
+                pass
+            try:
+                res = self.exec(q1)
+            except:
+                pass
+
+        return exists
 
     def exec(self, query: str):
         transaction = lambda tx: tx.run(query).values()
@@ -515,3 +531,8 @@ class Neo_api(object):
 
     def __del__(self):
         self.driver.close()
+
+    def autopopulate(self):
+        self.populate("Аналитик")
+        self.populate("Разработчик")
+        self.populate("Экономист")

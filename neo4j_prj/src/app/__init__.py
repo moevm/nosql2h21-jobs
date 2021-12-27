@@ -16,6 +16,7 @@ hh_api: Hh_api = None  # Hh_api()
 
 
 def create_app(config_filename: str = None):
+    print("App is launching. Please Wait")
     config = settings.read(config_filename)
     global neo_api
     global hh_api
@@ -73,7 +74,12 @@ def create_app(config_filename: str = None):
             return str(e)
 
     print("index:", neo_api.create_search_index_if_not_exest())
-
+    if neo_api.get_total_count() < 100:
+        print("iindex_pop")
+        print()
+        neo_api.autopopulate()
+    neo_api.count_ks_weight()
+    neo_api.count_vac_weight()
     with app.app_context():
         app
         # from webapp.models import db

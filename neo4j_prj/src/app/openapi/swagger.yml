@@ -710,7 +710,7 @@ paths:
               schema:
                 type: array
       parameters:
-        - name: offset
+        - name: data_str
           in: query
           description: offset
           required: true
@@ -732,13 +732,6 @@ paths:
             application/json:
               schema:
                 type: string
-      parameters:
-        - name: offset
-          in: path
-          description: offset
-          required: true
-          schema:
-            type: string
 
 servers:
   - url: /api
