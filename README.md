@@ -8,6 +8,21 @@
 Подождать запуска БД, далее  
 `$ docker-compose up --build hello_world`
 
+## Запуск проекта
+Приложение состоит из трёх сервисов, взаимодействующих между собой  
+Neo4j - база данных  
+Rest - бэкэнд. Содержит бизнес-логику приложения. Общается с базой данных посредством запросов на языке запросов Cypher. Предоставляет REST-api для фронтенда. Rest-api генерируется на основе документации Openapi 3, при помощи connexion  
+ui - фронтэнд. Обращается к REST-api и реализует взаимодействие с пользователем  
+Для запуска надо склонировать репозиторий, построить и запустить все контейнеры через docker-compose  
+`$ docker-compose build --no-cache`  
+`$ docker-compose up`  
+Билд и запуск погут занять время свыше 2-х минут  
+
+[Демо]([Демо](https://drive.google.com/file/d/1nrT6IbR89ufyuPLxBCqLVm9JMyh5QrrJ/view?usp=sharing)) билда и запуска  
+[Демо]([Демо](https://drive.google.com/file/d/1t3sZ0Byuo4Hh-kH5JGc3W3U-RckVkH5H/view?usp=sharing)) работы с приложением  
+[Демо]([Демо](https://drive.google.com/file/d/12egwMx9i7czEQCzBomvinWjjcmLQwhxB/view?usp=sharing)) вспомогательнх инструментов, использовавшихся при разработке. Показана работа с графическим интерфейсом neo4j и собственноручно разработанным api на Swagger    
+
+
 
 ## Модель данных
 ### Список сущностей
