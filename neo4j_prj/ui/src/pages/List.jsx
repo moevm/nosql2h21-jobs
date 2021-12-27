@@ -128,20 +128,27 @@ export function List({
 
     fetch(`${SERVER_URL}/api/vacancy/sim/${selectedVacancy}/10`)
       .then((res) => res.json())
-      .then((value) => {
-        console.log(value);
+      .then(({ cx, cy, items, name }) => {
         const newSchema = createSchema({
           nodes: [
-            { id: 'node-1', content: 'Node 1', coordinates: [250, 60] },
-            { id: 'node-2', content: 'Node 2', coordinates: [100, 200] },
-            { id: 'node-3', content: 'Node 3', coordinates: [250, 220] },
-            { id: 'node-4', content: 'Node 4', coordinates: [400, 200] },
+            {
+              id: selectedVacancy.toString(),
+              content: name,
+              coordinates: [cx, cy],
+            },
+            ...items.map(
+              ({ cx: x, cy: y, name: content, vacancy_id: vacancyId }) => ({
+                id: vacancyId.toString(),
+                content,
+                coordinates: [x, y],
+              })
+            ),
           ],
-          links: [
-            { input: 'node-1', output: 'node-2' },
-            { input: 'node-1', output: 'node-3' },
-            { input: 'node-1', output: 'node-4' },
-          ],
+          links: items.map(({ vacancy_id: vacancyId, cnt }) => ({
+            input: selectedVacancy.toString(),
+            output: vacancyId.toString(),
+            label: cnt,
+          })),
         });
 
         onChange(newSchema);
@@ -149,14 +156,31 @@ export function List({
   }, [onChange, selectedVacancy]);
 
   const handleSave = useCallback(() => {
-    setPayload(initialPayload);
-  }, []);
+    fetch(`${SERVER_URL}/api/vacancy`, {
+      method: 'post',
+      body: JSON.stringify(payload),
+    }).then(() => {
+      setPayload(initialPayload);
+
+      toast({
+        title: 'Вакансия создана!',
+        description: 'Вы успешно создали новую вакансию',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+
+      handleCreateClose();
+    });
+  }, [handleCreateClose, payload, toast]);
 
   const handleDelete = useCallback(
     (id) => () => {
-      fetch(`${SERVER_URL}/api/vacancy/sim/${selectedVacancy}/10`, {
+      fetch(`${SERVER_URL}/api/vacancy/${id}`, {
         method: 'delete',
       }).then(() => {
+        handleFilter();
+
         toast({
           title: 'Вакансия удалена',
           description: 'Вы успешно удалили вакансию',
@@ -166,7 +190,7 @@ export function List({
         });
       });
     },
-    [selectedVacancy, toast]
+    [handleFilter, toast]
   );
 
   return (
@@ -233,11 +257,35 @@ export function List({
 
         <ListButtonsContainer>
           <ListButton
-            {...(selectedVacancy === -1 ? {} : { onClick: handleOpenDiagram })}>
+            onClick={() => {
+              if (selectedVacancy === -1) {
+                toast({
+                  title: 'Выберите вакансию',
+                  status: 'warning',
+                  duration: 2000,
+                  isClosable: true,
+                });
+                return;
+              }
+
+              handleOpenDiagram();
+            }}>
             Построить диаграмму
           </ListButton>
           <ListButton
-            {...(selectedVacancy === -1 ? {} : { onClick: handleOpenGraph })}>
+            onClick={() => {
+              if (selectedVacancy === -1) {
+                toast({
+                  title: 'Выберите вакансию',
+                  status: 'warning',
+                  duration: 2000,
+                  isClosable: true,
+                });
+                return;
+              }
+
+              handleOpenGraph();
+            }}>
             Построить граф
           </ListButton>
           <ListButton onClick={handleOpenCreate}>
@@ -261,11 +309,9 @@ export function List({
         </ListItemsContainer>
       </ListContent>
 
-      <Modal onClose={handleGraphClose} open={isGraphOpen}>
-        <Diagram schema={schema} />
-      </Modal>
+      <Modal onClose={handleGraphClose} open={isGraphOpen} />
 
-      <Modal onClose={handleDiagramClose} open={isDiagramOpen}>
+      <Modal big onClose={handleDiagramClose} open={isDiagramOpen}>
         <Diagram onChange={onChange} schema={schema} />
       </Modal>
 

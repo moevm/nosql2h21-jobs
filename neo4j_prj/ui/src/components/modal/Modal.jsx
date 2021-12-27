@@ -15,7 +15,7 @@ export function useModalProps() {
   return context;
 }
 
-export function Modal({ open, onClose, children }) {
+export function Modal({ open, onClose, children, big = false }) {
   const { ref, active } = usePortal({ open, onClose });
 
   return (
@@ -23,7 +23,7 @@ export function Modal({ open, onClose, children }) {
       {(open || active) && (
         <Portal>
           <ModalBackdrop ref={ref} isActive={active && open}>
-            <ModalContent>{children}</ModalContent>
+            <ModalContent big={big}>{children}</ModalContent>
           </ModalBackdrop>
         </Portal>
       )}

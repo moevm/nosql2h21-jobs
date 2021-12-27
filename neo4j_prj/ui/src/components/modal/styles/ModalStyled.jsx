@@ -34,6 +34,13 @@ export const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  ${({ big }) =>
+    big &&
+    css`
+      width: 90vw;
+      height: 90vh;
+    `}
 `;
 
 export const ModalBackdrop = styled(Backdrop)`
