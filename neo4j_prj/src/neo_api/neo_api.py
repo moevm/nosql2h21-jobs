@@ -176,7 +176,7 @@ class Neo_api(object):
         v = 'v'  # v,s,c,a,k,sh,e,t
         if areas:
             q += f'match (v)--(a:Area) ' \
-                 f'where a.id in {json.dump(areas)} '
+                 f'where a.id in {json.dumps(areas)} '
             v += ',a'
         if currency:
             q += f'match (v)--(c:Currency{{name:"{currency}"}}) '
