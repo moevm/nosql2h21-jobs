@@ -366,6 +366,27 @@ paths:
           schema:
             type: integer
 
+  /vacancy/{id}:
+    delete:
+      summary: Delete vac
+      operationId: app.aux.neo_api.del_vac
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          example: 0
+          schema:
+            type: integer
+
+
   /vacancy/top_need/{offset}/{limit}:
     get:
       operationId: app.aux.neo_api.get_top_need

@@ -5,6 +5,7 @@ import json
 import random
 import sys
 import time
+from datetime import datetime
 from time import sleep
 from typing import List, Dict
 
@@ -142,9 +143,35 @@ class Neo_api(object):
         res = self.exec(q)
         return [dict(i[0]) for i in res]
 
+    def create_vacancy(self, name: str, area_id: int, currency: str, employer: str, schedule: str,
+                       requirement: str = "", responsibility: str = "", salary_from: int = 0,
+                       salary_to: int = 500000):
+
+        vid = random.randint(10, 100000)
+        while (self.get_vacancy_by_ids([vid])):
+            vid = random.randint(10, 100000)
+
+        vacancy = {"created_at": str(datetime.datetime.now().isoformat()),
+                   "published_at": str(datetime.datetime.now().isoformat()),
+                   "name": name,
+                   "requirement": requirement,
+                   "responsibility": responsibility,
+                   "salary_from": salary_from,
+                   "salary_to": salary_to,
+                   "id": vid
+                   }
+        area = self.get_area(area_id)
+        if area:
+            area = area[0]
+        else:
+            area = {"id": 0, "name": "None"}
+        area = self.get_area(area_id)[0]
+        currency = {"name": currency}
+        schedule = {"id": schedule}
+
     def create_vacancy_all(self, vacancy_all: Dict):
         vac_all = vacancy_all
-        key_skills: List[str] = vac_all["key_skills"]
+        key_skills: List[str] = vac_all.get("key_skills") or []
         q = f'MERGE (v:Vacancy{{{self.dict_to_neo(vac_all["vacancy"])}}}) ' \
             f'MERGE (a:Area{{{self.dict_to_neo(vac_all["area"])}}}) ' \
             f'MERGE (c:Currency{{{self.dict_to_neo(vac_all["currency"])}}}) ' \
@@ -328,6 +355,8 @@ class Neo_api(object):
         kss = [dict(i[0]) for i in res]
         return kss
 
+    # def create
+
     def get_similar_vacs_by_ks_all(self, id: int, limit: int = 10):
         q = f'match (a:Vacancy)--(k:Key_skill)--(b:Vacancy) where a.id = {id} and b.id<>a.id return b.id'
         res = self.exec(q)
@@ -367,6 +396,12 @@ class Neo_api(object):
         ret["len"] = len(vacs)
 
         return ret
+
+    def del_vac(self, id):
+        q = f'match (v:Vacancy{{id:{id}}}) optional match (v)-[l]-() delete v,l'
+        res = self.exec(q)
+        print(res)
+        return True
 
     def get_most_req_ks(self):  # TODO
         pass
