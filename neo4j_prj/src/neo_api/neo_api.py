@@ -400,6 +400,14 @@ class Neo_api(object):
             res = False
         return res
 
+    def create_search_index_if_not_exest(self):
+        exists = str(self.exec("CALL db.indexes")).find("FULLTEXT") != -1
+        res = None
+        if not exists:
+            q = "CALL db.index.fulltext.createNodeIndex('descriptions', ['Vacancy'], ['name','responsibility', 'requirement'], {analyzer: 'russian'})"
+            res = self.exec(q)
+        return bool(res)
+
     def exec(self, query: str):
         transaction = lambda tx: tx.run(query).values()
 

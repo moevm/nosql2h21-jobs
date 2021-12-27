@@ -72,6 +72,8 @@ def create_app(config_filename: str = None):
         except Exception as e:
             return str(e)
 
+    print("index:", neo_api.create_search_index_if_not_exest())
+
     with app.app_context():
         app
         # from webapp.models import db
